@@ -115,7 +115,44 @@ async function uploadImage(file){
 function Admin(){
  const [content,setContent]=useState(defaultContent),[email,setEmail]=useState(''),[password,setPassword]=useState(''),[logged,setLogged]=useState(false),[tab,setTab]=useState('hero'),[msg,setMsg]=useState('')
  useEffect(()=>{loadContent().then(setContent);setLogged(sessionStorage.getItem('integra-admin')==='1')},[])
- const login=async e=>{e.preventDefault(); if(supabase){const {error}=await supabase.auth.signInWithPassword({email,password}); if(error){setMsg(error.message);return}} else if(!email||!password){return} sessionStorage.setItem('integra-admin','1');setLogged(true)}
+ const login = async (e) => {
+  e.preventDefault();
+
+  setMsg('');
+
+  if (!email || !password) {
+    setMsg('Please enter your email and password.');
+    return;
+  }
+
+  if (!supabase) {
+    setMsg('Supabase is not configured.');
+    return;
+  }
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password
+    });
+
+    if (error) {
+      setMsg(`Login failed: ${error.message}`);
+      return;
+    }
+
+    if (!data?.session) {
+      setMsg('Login failed: No authentication session was created.');
+      return;
+    }
+
+    sessionStorage.setItem('integra-admin', '1');
+    setLogged(true);
+    setMsg('Login successful.');
+  } catch (err) {
+    setMsg(`Login error: ${err.message || 'Unknown error'}`);
+  }
+};
  const save=async()=>{try{await saveContent(content);setMsg('Saved successfully.')}catch(e){setMsg('Saved locally. Configure Supabase to sync public content.')}setTimeout(()=>setMsg(''),2500)}
  const set=(path,val)=>setContent(prev=>{const n=structuredClone(prev);let o=n;for(let i=0;i<path.length-1;i++)o=o[path[i]];o[path[path.length-1]]=val;return n})
  if(!logged)return <div className="admin-auth"><form onSubmit={login}><img src="/assets/logo.png"/><h1>INTEGRA Admin</h1><input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Admin email"/><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password"/><button>Sign In</button><p>Admin authentication is connected to your Supabase project after configuration.</p></form></div>
