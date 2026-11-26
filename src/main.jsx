@@ -1507,7 +1507,150 @@ function Admin() {
     </div>
   )
 }
+function ResetPassword() {
+  const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [msg, setMsg] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [ready, setReady] = useState(false)
 
+  useEffect(() => {
+    const checkRecoverySession = async () => {
+      if (!supabase) {
+        setMsg('Supabase is not configured.')
+        return
+      }
+
+      const { data, error } = await supabase.auth.getSession()
+
+      if (error || !data?.session) {
+        setMsg('This password reset link is invalid or has expired. Please request a new one.')
+        return
+      }
+
+      setReady(true)
+    }
+
+    checkRecoverySession()
+
+    const { data: listener } =
+      supabase?.auth.onAuthStateChange((event, session) => {
+        if (event === 'PASSWORD_RECOVERY' && session) {
+          setReady(true)
+          setMsg('')
+        }
+      }) || { data: null }
+
+    return () => {
+      listener?.subscription?.unsubscribe()
+    }
+  }, [])
+
+  const updatePassword = async e => {
+    e.preventDefault()
+    setMsg('')
+
+    if (!password || !confirmPassword) {
+      setMsg('Please enter your new password and confirm it.')
+      return
+    }
+
+    if (password.length < 6) {
+      setMsg('Password must contain at least 6 characters.')
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setMsg('The passwords do not match.')
+      return
+    }
+
+    if (!supabase) {
+      setMsg('Supabase is not configured.')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password
+      })
+
+      if (error) {
+        setMsg(`Password update failed: ${error.message}`)
+        return
+      }
+
+      setMsg('Password updated successfully.')
+
+      setTimeout(() => {
+        window.location.hash = '#admin'
+      }, 1500)
+    } catch (err) {
+      setMsg(
+        `Password update failed: ${
+          err?.message || 'Unknown error'
+        }`
+      )
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <div className="admin-auth">
+      <form onSubmit={updatePassword}>
+        <img src="/assets/logo.png" />
+
+        <h1>Set New Password</h1>
+
+        {!ready ? (
+          <p className="admin-message">
+            {msg || 'Checking password reset link...'}
+          </p>
+        ) : (
+          <>
+            <input
+              type="password"
+              value={password}
+              onChange={e =>
+                setPassword(e.target.value)
+              }
+              placeholder="New password"
+              autoComplete="new-password"
+            />
+
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={e =>
+                setConfirmPassword(e.target.value)
+              }
+              placeholder="Confirm new password"
+              autoComplete="new-password"
+            />
+
+            <button
+              type="submit"
+              disabled={loading}
+            >
+              {loading
+                ? 'Updating Password...'
+                : 'Update Password'}
+            </button>
+
+            {msg && (
+              <p className="admin-message">
+                {msg}
+              </p>
+            )}
+          </>
+        )}
+      </form>
+    </div>
+  )
+}
 function Editor({
   title,
   children
@@ -1611,15 +1754,16 @@ function Field({
   )
 }
 
-const root =
-  createRoot(
-    document.getElementById(
-      'root'
-    )
-  )
+const root = createRoot(document.getElementById('root'))
+
+const isRecovery =
+  location.hash.includes('type=recovery') ||
+  location.hash.includes('access_token=')
 
 root.render(
-  location.hash === '#admin'
-    ? <Admin />
-    : <App />
+  isRecovery
+    ? <ResetPassword />
+    : location.hash === '#admin'
+      ? <Admin />
+      : <App />
 )
