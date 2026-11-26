@@ -831,7 +831,39 @@ function Admin() {
     const checkSession = async () => {
       if (!supabase) {
         if (mounted) {
-           const login = async e => {
+          setLogged(false)
+        }
+
+        return
+      }
+
+      const { data } =
+        await supabase.auth.getSession()
+
+      if (mounted) {
+        setLogged(!!data?.session)
+      }
+    }
+
+    checkSession()
+
+    const authListener = supabase
+      ? supabase.auth.onAuthStateChange(
+          (_event, session) => {
+            if (mounted) {
+              setLogged(!!session)
+            }
+          }
+        )
+      : null
+
+    return () => {
+      mounted = false
+      authListener?.data?.subscription?.unsubscribe()
+    }
+  }, [])
+
+  const login = async e => {
     e.preventDefault()
     setMsg('')
 
@@ -883,32 +915,6 @@ function Admin() {
         }`
       )
     }
-  }ON.stringify({
-          username,
-          password
-        })
-      })
-
-      const result = await response.json()
-
-      if (!response.ok || !result.success) {
-        setMsg(
-          result.message ||
-            'Invalid username or password.'
-        )
-        return
-      }
-
-      sessionStorage.setItem('integra-admin', '1')
-      setLogged(true)
-      setEmail('')
-      setPassword('')
-      setMsg('Login successful.')
-    } catch (err) {
-      setMsg(
-        'Unable to connect to the admin login server.'
-      )
-    }
   }
 
   const save = async () => {
@@ -955,8 +961,8 @@ function Admin() {
             onChange={e =>
               setEmail(e.target.value)
             }
-            placeholder="Admin username"
-            autoComplete="username"
+            placeholder="Admin email"
+            autoComplete="email"
           />
 
           <input
