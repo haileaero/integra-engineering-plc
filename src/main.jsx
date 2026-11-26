@@ -1756,9 +1756,13 @@ function Field({
 
 const root = createRoot(document.getElementById('root'))
 
+const recoveryParams = new URLSearchParams(location.search)
+
 const isRecovery =
   location.hash.includes('type=recovery') ||
-  location.hash.includes('access_token=')
+  location.hash.includes('access_token=') ||
+  recoveryParams.has('type') && recoveryParams.get('type') === 'recovery' ||
+  recoveryParams.has('code')
 
 root.render(
   isRecovery
