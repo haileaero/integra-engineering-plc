@@ -27,7 +27,23 @@ const supabaseAnonKey=import.meta.env.VITE_SUPABASE_ANON_KEY
 const supabase = supabaseUrl && supabaseAnonKey ? createClient(supabaseUrl,supabaseAnonKey) : null
 const localKey='integra-site-content-v2'
 function loadLocal(){try{return JSON.parse(localStorage.getItem(localKey))||defaultContent}catch{return defaultContent}}
-async function loadContent(){if(!supabase)return loadLocal(); const {data,error}=await supabase.from('site_content').select('content').eq('id',1).maybeSingle(); if(error||!data)return loadLocal(); return data.content}
+async function loadContent(){
+  if(!supabase)return loadLocal();
+  const {data,error}=await supabase.from('site_content').select('content').eq('id',1).maybeSingle();
+  if(error||!data?.content)return loadLocal();
+
+  const saved=data.content;
+
+  return {
+    ...defaultContent,
+    ...saved,
+    settings:{...defaultContent.settings,...(saved.settings||{})},
+    hero:{...defaultContent.hero,...(saved.hero||{})},
+    about:{...defaultContent.about,...(saved.about||{})},
+    services:Array.isArray(saved.services)&&saved.services.length?saved.services:defaultContent.services,
+    projects:Array.isArray(saved.projects)&&saved.projects.length?saved.projects:defaultContent.projects
+  };
+}
 async function saveContent(content){localStorage.setItem(localKey,JSON.stringify(content)); if(supabase){const {error}=await supabase.from('site_content').upsert({id:1,content}); if(error) throw error}}
 
 function App(){
