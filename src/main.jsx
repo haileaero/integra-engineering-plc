@@ -826,93 +826,53 @@ function Admin() {
   useEffect(() => {
     loadContent().then(setContent)
 
-    let mounted = true
+    const adminSession =
+      sessionStorage.getItem('integra-admin') === '1'
 
-    const checkSession = async () => {
-      if (!supabase) {
-        if (mounted) {
-          setLogged(false)
-        }
-
-        return
-      }
-
-      const { data } =
-        await supabase.auth.getSession()
-
-      if (mounted) {
-        setLogged(!!data?.session)
-      }
-    }
-
-    checkSession()
-
-    const authListener = supabase
-      ? supabase.auth.onAuthStateChange(
-          (_event, session) => {
-            if (mounted) {
-              setLogged(!!session)
-            }
-          }
-        )
-      : null
-
-    return () => {
-      mounted = false
-      authListener?.data?.subscription?.unsubscribe()
-    }
+    setLogged(adminSession)
   }, [])
 
   const login = async e => {
     e.preventDefault()
     setMsg('')
 
-    const cleanEmail = email.trim()
+    const username = email.trim()
 
-    if (!cleanEmail || !password) {
-      setMsg(
-        'Please enter your email and password.'
-      )
-      return
-    }
-
-    if (!supabase) {
-      setMsg(
-        'Supabase is not configured. Check the Vercel environment variables.'
-      )
+    if (!username || !password) {
+      setMsg('Please enter your username and password.')
       return
     }
 
     try {
-      const { data, error } =
-        await supabase.auth.signInWithPassword({
-          email: cleanEmail,
+      const response = await fetch('/api/admin-login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username,
           password
         })
+      })
 
-      if (error) {
+      const result = await response.json()
+
+      if (!response.ok || !result.success) {
         setMsg(
-          `Login failed: ${error.message}`
+          result.message ||
+            'Invalid username or password.'
         )
         return
       }
 
-      if (!data?.session) {
-        setMsg(
-          'Login failed: Supabase did not create a session.'
-        )
-        return
-      }
-
+      sessionStorage.setItem('integra-admin', '1')
       setLogged(true)
       setEmail('')
       setPassword('')
       setMsg('Login successful.')
     } catch (err) {
       setMsg(
-        `Login error: ${
-          err?.message || 'Unable to sign in.'
-        }`
+        'Unable to connect to the admin login server.'
       )
     }
   }
@@ -961,8 +921,8 @@ function Admin() {
             onChange={e =>
               setEmail(e.target.value)
             }
-            placeholder="Admin email"
-            autoComplete="email"
+            placeholder="Admin username"
+            autoComplete="username"
           />
 
           <input
@@ -986,8 +946,8 @@ function Admin() {
           )}
 
           <p>
-            Admin authentication is connected to
-            your Supabase project.
+            Sign in with your administrator username
+            and password.
           </p>
         </form>
       </div>
@@ -1021,16 +981,13 @@ function Admin() {
         ))}
 
         <button
-          onClick={async () => {
-            if (supabase) {
-              await supabase.auth.signOut()
-            }
-
+          onClick={() => {
             sessionStorage.removeItem(
               'integra-admin'
             )
 
             setLogged(false)
+            setMsg('')
           }}
         >
           <LogOut />
