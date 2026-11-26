@@ -826,30 +826,64 @@ function Admin() {
   useEffect(() => {
     loadContent().then(setContent)
 
-    const adminSession =
-      sessionStorage.getItem('integra-admin') === '1'
+    let mounted = true
 
-    setLogged(adminSession)
-  }, [])
-
-  const login = async e => {
+    const checkSession = async () => {
+      if (!supabase) {
+        if (mounted) {
+           const login = async e => {
     e.preventDefault()
     setMsg('')
 
-    const username = email.trim()
+    const cleanEmail = email.trim()
 
-    if (!username || !password) {
-      setMsg('Please enter your username and password.')
+    if (!cleanEmail || !password) {
+      setMsg(
+        'Please enter your email and password.'
+      )
+      return
+    }
+
+    if (!supabase) {
+      setMsg(
+        'Supabase is not configured. Check the Vercel environment variables.'
+      )
       return
     }
 
     try {
-      const response = await fetch('/api/admin-login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email: cleanEmail,
+          password
+        })
+
+      if (error) {
+        setMsg(
+          `Login failed: ${error.message}`
+        )
+        return
+      }
+
+      if (!data?.session) {
+        setMsg(
+          'Login failed: Supabase did not create a session.'
+        )
+        return
+      }
+
+      setLogged(true)
+      setEmail('')
+      setPassword('')
+      setMsg('Login successful.')
+    } catch (err) {
+      setMsg(
+        `Login error: ${
+          err?.message || 'Unable to sign in.'
+        }`
+      )
+    }
+  }ON.stringify({
           username,
           password
         })
@@ -946,8 +980,8 @@ function Admin() {
           )}
 
           <p>
-            Sign in with your administrator username
-            and password.
+            Admin authentication is connected to
+            your Supabase project.
           </p>
         </form>
       </div>
@@ -981,13 +1015,16 @@ function Admin() {
         ))}
 
         <button
-          onClick={() => {
+          onClick={async () => {
+            if (supabase) {
+              await supabase.auth.signOut()
+            }
+
             sessionStorage.removeItem(
               'integra-admin'
             )
 
             setLogged(false)
-            setMsg('')
           }}
         >
           <LogOut />
