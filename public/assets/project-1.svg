@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 390">
+<defs>
+  <linearGradient id="g1" x1="0" x2="1"><stop stop-color="#0b3d91"/><stop offset="1" stop-color="#eaf3fa"/></linearGradient>
+  <linearGradient id="g2" x1="0" x2="1"><stop stop-color="#263f59"/><stop offset="1" stop-color="#6d8398"/></linearGradient>
+</defs>
+<rect width="700" height="390" fill="url(#g1)"/>
+<rect y="280" width="700" height="110" fill="#dce6ee"/>
+<rect x="60" y="205" width="120" height="95" rx="5" fill="#344d63"/>
+<rect x="75" y="220" width="90" height="65" fill="#9eb4c5"/>
+<rect x="220" y="150" width="185" height="150" rx="7" fill="url(#g2)"/>
+<rect x="240" y="172" width="145" height="95" fill="#d7e4ed"/>
+<rect x="445" y="185" width="120" height="115" rx="5" fill="#4b6479"/>
+<circle cx="505" cy="220" r="32" fill="#c7d6e1"/>
+<circle cx="505" cy="220" r="15" fill="#567086"/>
+<path d="M190 320h340" stroke="#0b3d91" stroke-width="10"/>
+<path d="M275 115v185M335 115v185M395 115v185" stroke="#f7fafc" stroke-width="6" opacity=".8"/>
+<text x="42" y="55" font-family="Arial" font-size="28" font-weight="700" fill="#ffffff">WORKSHOP &amp; FABRICATION</text>
+<text x="43" y="87" font-family="Arial" font-size="17" fill="#ffffff">Engineering workshop facility</text>
+</svg>

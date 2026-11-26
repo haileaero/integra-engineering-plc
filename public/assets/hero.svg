@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560">
+<defs>
+ <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#dff1ff"/><stop offset="1" stop-color="#b9d8ee"/></linearGradient>
+ <linearGradient id="vest" x1="0" x2="1"><stop stop-color="#b7dc20"/><stop offset="1" stop-color="#d9ef42"/></linearGradient>
+</defs>
+<rect width="900" height="560" fill="url(#sky)"/>
+<circle cx="770" cy="100" r="58" fill="#ffc928" opacity=".92"/><circle cx="770" cy="100" r="29" fill="#ffe58b"/>
+<g fill="#9fb8ca" opacity=".55"><rect x="55" y="300" width="90" height="190"/><rect x="160" y="260" width="80" height="230"/><rect x="260" y="330" width="120" height="160"/><rect x="690" y="270" width="75" height="220"/><rect x="780" y="220" width="70" height="270"/></g>
+<g stroke="#8fa8b9" stroke-width="9" opacity=".55"><path d="M500 100v390M440 180h250M425 250h310M410 330h340"/></g>
+<!-- wind turbine -->
+<g stroke="#7d9db2" stroke-width="7" fill="none"><path d="M355 455V205"/><circle cx="355" cy="205" r="11" fill="#7d9db2"/><path d="M355 205L300 120M355 205l90-60M355 205l10 100"/></g>
+<!-- aircraft -->
+<path d="M575 92l65 17-24 10 45 23-8 10-47-15 5 28-10 3-20-30-31-2 2-8 30-9z" fill="#0b4ca2"/>
+<!-- male engineer -->
+<g transform="translate(450,205)">
+ <ellipse cx="105" cy="55" rx="47" ry="51" fill="#9a5f3c"/><path d="M55 42q48-62 98 0l-8 18H58z" fill="#f3c632"/><path d="M58 37q50-50 94 1" fill="none" stroke="#fff" stroke-width="13"/>
+ <path d="M53 110q52-30 105 0l38 180H12z" fill="url(#vest)" stroke="#52700e" stroke-width="4"/>
+ <path d="M72 130l-17 100M139 130l18 100" stroke="#8e593a" stroke-width="22" stroke-linecap="round"/>
+ <rect x="152" y="155" width="105" height="72" rx="8" fill="#0b3d91" transform="rotate(8 152 155)"/><rect x="161" y="164" width="87" height="52" rx="4" fill="#d9efff" transform="rotate(8 161 164)"/>
+</g>
+<!-- female engineer -->
+<g transform="translate(610,285) scale(.78)">
+ <ellipse cx="75" cy="42" rx="39" ry="44" fill="#9a603f"/><path d="M35 30q38-51 80 0l-5 18H39z" fill="#f3c632"/><path d="M38 28q39-42 75 0" fill="none" stroke="#fff" stroke-width="11"/>
+ <path d="M35 95q42-27 82 0l28 180H10z" fill="#f4cfd0" stroke="#8b6d73" stroke-width="3"/><path d="M53 110l-16 105M100 110l18 105" stroke="#8e593a" stroke-width="20" stroke-linecap="round"/>
+ <rect x="100" y="135" width="88" height="61" rx="7" fill="#0b3d91" transform="rotate(7 100 135)"/><rect x="108" y="143" width="72" height="43" rx="4" fill="#d9efff" transform="rotate(7 108 143)"/>
+</g>
+<!-- ground and ribbon -->
+<rect y="490" width="900" height="70" fill="#edf4f7"/>
+<path d="M0 505Q260 470 530 510T900 485v22Q610 548 320 505T0 528z" fill="#0b8f4b"/>
+<path d="M0 518Q270 483 540 522T900 498v14Q620 560 310 517T0 541z" fill="#f6c400"/>
+<path d="M0 531Q270 496 540 535T900 511v14Q620 573 310 530T0 554z" fill="#df3030"/>
+</svg>

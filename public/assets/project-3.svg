@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 390">
+<defs><linearGradient id="g" x1="0" x2="1"><stop stop-color="#d99e00"/><stop offset="1" stop-color="#eaf3fa"/></linearGradient></defs>
+<rect width="700" height="390" fill="url(#g)"/>
+<g fill="none" stroke="#ffffff" stroke-width="7" opacity=".65">
+<circle cx="540" cy="165" r="78"/><circle cx="540" cy="165" r="42"/><path d="M540 50v55M540 225v55M425 165h55M600 165h55M459 84l39 39M582 207l39 39M459 246l39-39M582 123l39-39"/>
+</g>
+<rect x="40" y="285" width="620" height="3" fill="#ffffff" opacity=".55"/>
+<text x="42" y="330" font-family="Arial" font-weight="800" font-size="30" fill="#ffffff">SOLAR POWER INSTALLATION</text>
+</svg>
