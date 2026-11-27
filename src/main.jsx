@@ -117,6 +117,54 @@ const defaultContent = {
       place: 'Adama',
       image: '/assets/project-3.svg'
     }
+  ],
+
+  team: [
+    {
+      id: 't1',
+      name: 'Engineering Team Member',
+      role: 'Engineering Professional',
+      bio: 'Experienced engineering professional contributing to integrated engineering solutions.',
+      image: '/assets/logo.png'
+    },
+    {
+      id: 't2',
+      name: 'Technical Team Member',
+      role: 'Technical Specialist',
+      bio: 'Technical specialist supporting practical engineering projects and solutions.',
+      image: '/assets/logo.png'
+    },
+    {
+      id: 't3',
+      name: 'Project Team Member',
+      role: 'Project Engineer',
+      bio: 'Project engineer supporting multidisciplinary planning, design and implementation.',
+      image: '/assets/logo.png'
+    }
+  ],
+
+  news: [
+    {
+      id: 'n1',
+      title: 'INTEGRA Engineering PLC',
+      date: '2026',
+      summary: 'Engineering updates, announcements and company activities from INTEGRA Engineering PLC.',
+      image: '/assets/project-1.svg'
+    },
+    {
+      id: 'n2',
+      title: 'Multidisciplinary Engineering Solutions',
+      date: '2026',
+      summary: 'Updates on engineering services, projects and technical initiatives.',
+      image: '/assets/project-2.svg'
+    },
+    {
+      id: 'n3',
+      title: 'Project & Engineering Updates',
+      date: '2026',
+      summary: 'Follow the latest project activities and engineering developments.',
+      image: '/assets/project-3.svg'
+    }
   ]
 }
 
@@ -178,7 +226,17 @@ async function loadContent() {
     projects:
       Array.isArray(saved.projects) && saved.projects.length
         ? saved.projects
-        : defaultContent.projects
+        : defaultContent.projects,
+
+    team:
+      Array.isArray(saved.team) && saved.team.length
+        ? saved.team
+        : defaultContent.team,
+
+    news:
+      Array.isArray(saved.news) && saved.news.length
+        ? saved.news
+        : defaultContent.news
   }
 }
 
@@ -584,7 +642,42 @@ function App() {
           </div>
         </section>
 
-        <section id="team" className="section why">
+        <section id="team" className="section team">
+          <div className="container">
+            <div className="section-title">
+              <span></span>
+              <h2>Our Team</h2>
+            </div>
+
+            <div className="project-grid">
+              {c.team.map(member => (
+                <article className="project" key={member.id}>
+                  <img
+                    src={member.image}
+                    onError={e => {
+                      if (
+                        e.currentTarget.dataset.fallback !== '1'
+                      ) {
+                        e.currentTarget.dataset.fallback = '1'
+                        e.currentTarget.src = '/assets/logo.png'
+                      }
+                    }}
+                  />
+
+                  <div className="project-body">
+                    <h3>{member.name}</h3>
+                    <div>
+                      <span>{member.role}</span>
+                    </div>
+                    <p>{member.bio}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section id="why" className="section why">
           <div className="container">
             <div className="section-title">
               <span></span>
@@ -631,24 +724,52 @@ function App() {
           </div>
         </section>
 
-        <section id="news" className="newsband">
+        <section id="news" className="section news">
           <div className="container">
-            <div>
-              <div className="section-title light">
-                <span></span>
-                <h2>Engineering Updates</h2>
-              </div>
+            <div className="section-row">
+              <div>
+                <div className="section-title">
+                  <span></span>
+                  <h2>News & Updates</h2>
+                </div>
 
-              <p>
-                News, announcements and project updates from
-                INTEGRA Engineering PLC.
-              </p>
+                <p>
+                  News, announcements and project updates from
+                  INTEGRA Engineering PLC.
+                </p>
+              </div>
             </div>
 
-            <button onClick={() => nav('contact')}>
-              Get in Touch
-              <ArrowRight size={16} />
-            </button>
+            <div className="project-grid">
+              {c.news.map(item => (
+                <article className="project" key={item.id}>
+                  <img
+                    src={item.image}
+                    onError={e => {
+                      if (
+                        e.currentTarget.dataset.fallback !== '1'
+                      ) {
+                        e.currentTarget.dataset.fallback = '1'
+                        e.currentTarget.src = '/assets/project-1.svg'
+                      }
+                    }}
+                  />
+
+                  <div className="project-body">
+                    <small>{item.date}</small>
+                    <h3>{item.title}</h3>
+                    <p>{item.summary}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className="actions">
+              <button onClick={() => nav('contact')}>
+                Get in Touch
+                <ArrowRight size={16} />
+              </button>
+            </div>
           </div>
         </section>
 
@@ -1006,6 +1127,8 @@ function Admin() {
           'about',
           'services',
           'projects',
+          'team',
+          'news',
           'settings'
         ].map(t => (
           <button
@@ -1360,6 +1483,190 @@ function Admin() {
             >
               <Plus />
               Add project
+            </button>
+          </Editor>
+        )}
+
+        {tab === 'team' && (
+          <Editor title="Team Members">
+            {content.team.map((member, i) => (
+              <div
+                className="admin-card"
+                key={member.id}
+              >
+                <Field
+                  label="Full name"
+                  value={member.name}
+                  onChange={v =>
+                    set(
+                      ['team', i, 'name'],
+                      v
+                    )
+                  }
+                />
+
+                <Field
+                  label="Position / role"
+                  value={member.role}
+                  onChange={v =>
+                    set(
+                      ['team', i, 'role'],
+                      v
+                    )
+                  }
+                />
+
+                <Field
+                  label="Biography"
+                  value={member.bio}
+                  onChange={v =>
+                    set(
+                      ['team', i, 'bio'],
+                      v
+                    )
+                  }
+                />
+
+                <ImageField
+                  label="Team member photo"
+                  value={member.image}
+                  onChange={v =>
+                    set(
+                      ['team', i, 'image'],
+                      v
+                    )
+                  }
+                />
+
+                <button
+                  className="delete"
+                  onClick={() =>
+                    setContent(q => ({
+                      ...q,
+                      team: q.team.filter(
+                        (_, j) => j !== i
+                      )
+                    }))
+                  }
+                >
+                  <Trash2 />
+                  Remove
+                </button>
+              </div>
+            ))}
+
+            <button
+              className="add"
+              onClick={() =>
+                setContent(p => ({
+                  ...p,
+                  team: [
+                    ...p.team,
+                    {
+                      id: 't' + Date.now(),
+                      name: 'New Team Member',
+                      role: 'Engineering Professional',
+                      bio: 'Team member biography.',
+                      image: '/assets/logo.png'
+                    }
+                  ]
+                }))
+              }
+            >
+              <Plus />
+              Add team member
+            </button>
+          </Editor>
+        )}
+
+        {tab === 'news' && (
+          <Editor title="News & Updates">
+            {content.news.map((item, i) => (
+              <div
+                className="admin-card"
+                key={item.id}
+              >
+                <Field
+                  label="News title"
+                  value={item.title}
+                  onChange={v =>
+                    set(
+                      ['news', i, 'title'],
+                      v
+                    )
+                  }
+                />
+
+                <Field
+                  label="Date"
+                  value={item.date}
+                  onChange={v =>
+                    set(
+                      ['news', i, 'date'],
+                      v
+                    )
+                  }
+                />
+
+                <Field
+                  label="Summary / content"
+                  value={item.summary}
+                  onChange={v =>
+                    set(
+                      ['news', i, 'summary'],
+                      v
+                    )
+                  }
+                />
+
+                <ImageField
+                  label="News image"
+                  value={item.image}
+                  onChange={v =>
+                    set(
+                      ['news', i, 'image'],
+                      v
+                    )
+                  }
+                />
+
+                <button
+                  className="delete"
+                  onClick={() =>
+                    setContent(q => ({
+                      ...q,
+                      news: q.news.filter(
+                        (_, j) => j !== i
+                      )
+                    }))
+                  }
+                >
+                  <Trash2 />
+                  Remove
+                </button>
+              </div>
+            ))}
+
+            <button
+              className="add"
+              onClick={() =>
+                setContent(p => ({
+                  ...p,
+                  news: [
+                    ...p.news,
+                    {
+                      id: 'n' + Date.now(),
+                      title: 'New News Item',
+                      date: '2026',
+                      summary: 'News summary.',
+                      image: '/assets/project-1.svg'
+                    }
+                  ]
+                }))
+              }
+            >
+              <Plus />
+              Add news item
             </button>
           </Editor>
         )}
