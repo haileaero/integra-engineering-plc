@@ -1041,10 +1041,10 @@ function Admin() {
   const save = async () => {
     try {
       await saveContent(content)
-      setMsg('Saved successfully.')
+      setMsg('Saved successfully. Public website content updated.')
     } catch (e) {
       setMsg(
-        'Saved locally. Configure Supabase to sync public content.'
+        `Save failed: ${e?.message || 'Unable to save content to Supabase.'}`
       )
     }
 
